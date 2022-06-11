@@ -18,7 +18,7 @@ class DishDetail extends Component {
         })
       
       return(
-        <>
+        <div className="row">
         <div className="col-12 col-md-5 m-1">
           <Card>
           <CardImg width='100%' src={dish.image} alt={dish.name} />
@@ -32,7 +32,7 @@ class DishDetail extends Component {
         <h4>Comments</h4>
         {comment}
       </div>
-      </>
+      </div>
       )} else {
         return(<div></div>)
       }
