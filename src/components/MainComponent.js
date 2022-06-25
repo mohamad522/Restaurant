@@ -1,44 +1,49 @@
-import Menu from './MenuComponent';
-import Home from './HomeComponent'
+import Menu from "./MenuComponent";
+import Home from "./HomeComponent";
 import DishDetail from "./DishdetailComponent ";
-import Header from './HeaderComponent';
-import Footer from './FooterComponent';
-import Contact from './ContactComponent';
-import About from './AboutComponent';
-import { DISHES } from '../shared/dishes';
-import { COMMENTS } from '../shared/comments';
-import { LEADERS } from '../shared/leaders';
-import { PROMOTIONS } from '../shared/promotions';
-import { Component } from 'react';
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
-import { connect } from 'react-redux';
-import { addComment, fetchDishes } from '../redux/ActionCreators';
+import Header from "./HeaderComponent";
+import Footer from "./FooterComponent";
+import Contact from "./ContactComponent";
+import About from "./AboutComponent";
+import { DISHES } from "../shared/dishes";
+import { COMMENTS } from "../shared/comments";
+import { LEADERS } from "../shared/leaders";
+import { PROMOTIONS } from "../shared/promotions";
+import { Component } from "react";
+import { Switch, Route, Redirect, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { addComment, fetchDishes } from "../redux/ActionCreators";
+import { actions } from "react-redux-form";
 
-
-const mapStateToProps = state => {
-  return {
-    dishes: state.dishes,
-    comments: state.comments,
-    promotions: state.promotions,
-    leaders: state.leaders
-  }
-}
+const mapStateToProps = (state) => {
+	return {
+		dishes: state.dishes,
+		comments: state.comments,
+		promotions: state.promotions,
+		leaders: state.leaders,
+	};
+};
 
 const mapDispatchToProps = (dispatch) => ({
 	addComment: (dishId, rating, author, comment) =>
 		dispatch(addComment(dishId, rating, author, comment)),
-  fetchDishes: () => { dispatch(fetchDishes())}
+	fetchDishes: () => {
+		dispatch(fetchDishes());
+	},
+	resetFeedbackForm: () => {
+		dispatch(actions.reset("feedback"));
+	},
 });
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-  }
-  componentDidMount() {
-    this.props.fetchDishes();
-  }
-  render() {
-    const HomePage = () => {
+	constructor(props) {
+		super(props);
+	}
+	componentDidMount() {
+		this.props.fetchDishes();
+	}
+	render() {
+		const HomePage = () => {
 			return (
 				<Home
 					dish={this.props.dishes.dishes.filter((dish) => dish.featured)[0]}
@@ -68,23 +73,37 @@ class Main extends Component {
 			);
 		};
 
-    return (
-      <div>
-        <Header />
-        <div>
-          <Switch>
-            <Route path='/home' component={HomePage} />
-            <Route exact path='/aboutus' component={() => <About leaders={this.props.leaders} />} />
-            <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} />} />
-            <Route path='/menu/:dishId' component={DishWithId} />
-            <Route exact path='/contactus' component={Contact} />
-            <Redirect to="/home" />
-          </Switch>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+		return (
+			<div>
+				<Header />
+				<div>
+					<Switch>
+						<Route path="/home" component={HomePage} />
+						<Route
+							exact
+							path="/aboutus"
+							component={() => <About leaders={this.props.leaders} />}
+						/>
+						<Route
+							exact
+							path="/menu"
+							component={() => <Menu dishes={this.props.dishes} />}
+						/>
+						<Route path="/menu/:dishId" component={DishWithId} />
+						<Route
+							exact
+							path="/contactus"
+							component={() => (
+								<Contact resetFeedbackForm={this.props.resetFeedbackForm} />
+							)}
+						/>
+						<Redirect to="/home" />
+					</Switch>
+				</div>
+				<Footer />
+			</div>
+		);
+	}
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
