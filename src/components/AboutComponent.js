@@ -8,25 +8,38 @@ import {
 	Media,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { Loading } from "./LoadingComponent";
+import { baseUrl } from "../shared/baseUrl";
+import { Stagger, Fade } from "react-animation-components";
 
-function RenderLeader({ leader }) {
-	return (
-		<Media className="row mt-5">
-			<Media left className="col-2">
-				<Media object src={leader.image} alt="Personal Image" />
-			</Media>
-			<Media body className="col-9 ml-5">
-				<Media heading>{leader.name}</Media>
-				<Media middle>{leader.designation}</Media>
-				<br />
-				{leader.description}
-			</Media>
-		</Media>
-	);
+function RenderLeader({ leader, isLoading, errMess }) {
+	if (isLoading) {
+		return <Loading />;
+	} else if (errMess) {
+		return <h4>{errMess}</h4>;
+	} else
+		return (
+			
+			<Stagger in>
+				<Fade in>
+				<Media className="row mt-5">
+					<Media left className="col-2">
+						<Media object src={baseUrl + leader.image} alt={leader.name} />
+					</Media>
+					<Media body className="col-9 ml-5">
+						<Media heading>{leader.name}</Media>
+						<Media middle>{leader.designation}</Media>
+						<br />
+						{leader.description}
+					</Media>
+				</Media>
+				</Fade>
+			</Stagger>
+		);
 }
 
 function About(props) {
-	const leaders = props.leaders.map((leader) => {
+	const leaders = props.leaders.leaders.map((leader) => {
 		return <RenderLeader leader={leader} />;
 	});
 
